@@ -87,6 +87,16 @@
     .deco-leaf{animation:none !important;}
   }
 
+  /* ================= SCROLL REVEAL (text blocks) ================= */
+  .reveal > *{opacity:0;transform:translateY(18px);transition:opacity .65s ease, transform .65s cubic-bezier(.2,.7,.3,1);}
+  .reveal.in-view > *{opacity:1;transform:translateY(0);}
+  .reveal.in-view > *:nth-child(1){transition-delay:.02s;}
+  .reveal.in-view > *:nth-child(2){transition-delay:.12s;}
+  .reveal.in-view > *:nth-child(3){transition-delay:.22s;}
+  .reveal.in-view > *:nth-child(4){transition-delay:.32s;}
+  .reveal.in-view > *:nth-child(5){transition-delay:.42s;}
+  .reveal.in-view > *:nth-child(6){transition-delay:.52s;}
+
   .hero-inner{position:relative;z-index:3;max-width:820px;}
   .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--wheat);margin:0 0 18px;display:flex;align-items:center;gap:10px;opacity:0;}
   .hero-eyebrow::before{content:"";width:26px;height:1px;background:var(--wheat);display:inline-block;}
@@ -134,17 +144,19 @@
 
   .card-box{
     background:var(--paper-dim);border:1px solid var(--line);border-radius:14px;
-    padding:20px 22px;box-shadow:0 6px 18px rgba(36,28,15,0.06);
+    padding:18px 22px;box-shadow:0 6px 18px rgba(36,28,15,0.06);
     max-width:380px;width:100%;text-align:left;
+    display:flex;align-items:flex-start;gap:14px;
     opacity:0;transition:opacity .55s ease, transform .55s ease;
   }
+  .item-text{flex:1;min-width:0;}
   .row:nth-child(odd) .card-box{grid-column:1;justify-self:end;transform:translateX(-26px);}
   .row:nth-child(even) .card-box{grid-column:2;justify-self:start;transform:translateX(26px);}
   .rows .row:nth-child(odd) .card-box{grid-column:1;justify-self:end;transform:translateX(-26px);}
   .rows .row:nth-child(even) .card-box{grid-column:2;justify-self:start;transform:translateX(26px);}
   .row.in-view .card-box{opacity:1;transform:translateX(0);}
 
-  .icon-wrap{width:40px;height:40px;border-radius:9px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--leaf-deep);border:1px solid var(--line);margin-bottom:12px;}
+  .icon-wrap{width:40px;height:40px;flex:none;border-radius:9px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--leaf-deep);border:1px solid var(--line);}
   .item-title{font-family:'Fraunces',serif;font-weight:600;font-size:17px;color:var(--leaf-deep);margin:0 0 4px;}
   .item-note{font-size:13px;color:#5c5334;font-style:italic;margin:0 0 2px;}
   .item-speaker{font-weight:600;font-size:12.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--wheat);margin:6px 0 0;}
@@ -243,6 +255,7 @@
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important;scroll-behavior:auto !important;animation:none !important;}
     .hero-eyebrow,.hero-title,.hero-sub,.meta-row,.card-box,.node,.sheaf,.name,.role{opacity:1 !important;transform:none !important;}
+    .reveal > *{opacity:1 !important;transform:none !important;}
   }
 
   /* ================= INVITATION SCREEN ================= */
@@ -399,7 +412,7 @@
       </div>
 
       <div class="stage" data-stage="1">
-        <div class="stage-header">
+        <div class="stage-header reveal">
           <span class="stage-num">Stage 01 · 1:00–1:45 PM</span>
           <h2>Sowing the Morning</h2>
           <p>Arrivals, ceremony, and a welcome to set the tone for the day.</p>
@@ -410,8 +423,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.2c2.6.3 4.5 2.3 4.5 5"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Registration and Attendance</p>
             <p class="item-speaker">John Leandro P. Capote</p>
+            </div>
           </div>
         </div>
 
@@ -419,8 +434,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Preliminaries</p>
             <p class="item-note">Prayer, National Anthem</p>
+            </div>
           </div>
         </div>
 
@@ -428,8 +445,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M9 22h6"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Welcome Remarks</p>
             <p class="item-speaker">Ms. Fritzie Ravago Melendres, RN</p>
+            </div>
           </div>
         </div>
 
@@ -437,15 +456,17 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Training Expectations and Pre Test Mechanics</p>
-            <p class="item-speaker">Jojo Escabal Jr.</p>
+            <p class="item-speaker">Apolinario M. Escabal Jr.</p>
+            </div>
           </div>
         </div>
         </div>
       </div>
 
       <div class="stage" data-stage="2">
-        <div class="stage-header">
+        <div class="stage-header reveal">
           <span class="stage-num">Stage 02 · 1:45–2:30 PM</span>
           <h2>Cultivating Ideas</h2>
           <p>The main discussion, planting new knowledge on smart farming.</p>
@@ -456,8 +477,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="7" r="3.2"/><path d="M5 21c0-4.4 3.1-7.5 7-7.5s7 3.1 7 7.5"/><path d="M4 21h16"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Introduction of the Speaker</p>
             <p class="item-speaker">Ms. Ma. Dahlia A. Gabriana</p>
+            </div>
           </div>
         </div>
 
@@ -465,9 +488,11 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="14" rx="2"/><path d="M8 11v-1a4 4 0 0 1 8 0v1M9 14v3M15 14v3"/><circle cx="9" cy="10.6" r=".6" fill="currentColor" stroke="none"/><circle cx="15" cy="10.6" r=".6" fill="currentColor" stroke="none"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Topic Discussion — Smart Farming Technologies</p>
             <p class="item-speaker">Mr. Maximo T. Lucop Jr.</p>
             <p class="item-role">President, MUFDA</p>
+            </div>
           </div>
         </div>
 
@@ -475,15 +500,17 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h13v16l-3-2-3.5 2-3.5-2-3 2V4z"/><path d="M8 10l2 2 4-4"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Post Test</p>
             <p class="item-speaker">Jojo Escabal Jr.</p>
+            </div>
           </div>
         </div>
         </div>
       </div>
 
       <div class="stage" data-stage="3">
-        <div class="stage-header">
+        <div class="stage-header reveal">
           <span class="stage-num">Stage 03 · 2:30–3:00 PM</span>
           <h2>Reaping the Harvest</h2>
           <p>Recognition, reflection, and gratitude to close the day.</p>
@@ -494,7 +521,9 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="12" rx="1.5"/><circle cx="12" cy="10" r="2.4"/><path d="M9 20h6M10 16.5v3.5M14 16.5v3.5"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Giving of Certificate and Honorarium</p>
+            </div>
           </div>
         </div>
 
@@ -502,8 +531,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h13v16l-3-2-3.5 2-3.5-2-3 2V4z"/><path d="M8 10l2 2 4-4"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Results of Post Test</p>
-            <p class="item-speaker">Jojo Escabal Jr.</p>
+            <p class="item-speaker">Ellen Grace C. Alejandria</p>
+            </div>
           </div>
         </div>
 
@@ -511,7 +542,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M9 12l2 2 4-4.5"/><path d="M12 3.5v1.5M12 19v1.5M3.5 12H5M19 12h1.5"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Photo Documentation</p>
+              <p class="item-speaker">Julie M. Galdo</p>
+            </div>
           </div>
         </div>
 
@@ -519,8 +553,10 @@
           <span class="node"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-4-2-6-5-6-9a6 6 0 0 1 12 0c0 4-2 7-6 9z"/></svg></span>
           <div class="card-box">
             <div class="icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 4 3 18M12 4h5v5M7 20l-4-4M13 20a5 5 0 0 0 5-5"/></svg></div>
+            <div class="item-text">
             <p class="item-title">Closing Remarks</p>
             <p class="item-speaker">Rev. Joshue Zuriel G. Tiempo, PhD</p>
+            </div>
           </div>
         </div>
         </div>
@@ -558,7 +594,7 @@
       <span class="deco-leaf light" style="bottom:26px;right:7%;animation-delay:1s;" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-6 2-9 7-9 13a9 9 0 0 0 18 0c0-6-3-11-9-13z"/></svg></span>
       <span class="deco-leaf light" style="top:45%;left:2%;animation-delay:.5s;width:18px;height:18px;" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-6 2-9 7-9 13a9 9 0 0 0 18 0c0-6-3-11-9-13z"/></svg></span>
       <span class="deco-leaf light" style="top:65%;right:2%;animation-delay:1.2s;width:18px;height:18px;" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-6 2-9 7-9 13a9 9 0 0 0 18 0c0-6-3-11-9-13z"/></svg></span>
-      <div class="register-inner">
+      <div class="register-inner reveal">
         <p class="register-eyebrow">Pre-registration</p>
         <h2 class="register-title">Register Your Name</h2>
         <p class="register-sub">Please register your full name below — this will be the basis for your Certificate of Participation later.</p>
@@ -569,7 +605,7 @@
         </form>
         <button type="button" class="view-participants-btn" id="viewParticipantsBtn">View Registered Participants</button>
 
-        <div class="group-block">
+        <div class="group-block reveal">
           <p class="group-title">GROUP 2 · MPA 211 Graduate Colloquium</p>
           <ul class="group-members">
             <li>Ma. Dahlia A. Gabriana</li>
@@ -650,6 +686,16 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in-view'); } });
   },{threshold:0.3});
   closingObserver.observe(document.getElementById('closing'));
+
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  },{threshold:0.2, rootMargin:'0px 0px -5% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
 
   const stages = Array.from(document.querySelectorAll('.stage'));
   const stageObserver = new IntersectionObserver((entries)=>{
