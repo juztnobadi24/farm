@@ -138,16 +138,17 @@
   .row .node{
     position:absolute;left:50%;top:22px;transform:translate(-50%,-50%) scale(.3) rotate(-25deg);
     width:20px;height:20px;color:var(--leaf);z-index:4;opacity:0;
-    transition:transform .5s cubic-bezier(.2,1.4,.4,1), opacity .4s ease;
+    transition:transform .5s cubic-bezier(.2,1.4,.4,1), opacity .4s ease, color .5s ease;
   }
   .row.in-view .node{transform:translate(-50%,-50%) scale(1) rotate(0deg);opacity:1;}
+  .row.line-active .node{color:var(--wheat);}
 
   .card-box{
     background:var(--paper-dim);border:1px solid var(--line);border-radius:14px;
     padding:18px 22px;box-shadow:0 6px 18px rgba(36,28,15,0.06);
     max-width:380px;width:100%;text-align:left;
     display:flex;align-items:flex-start;gap:14px;
-    opacity:0;transition:opacity .55s ease, transform .55s ease;
+    opacity:0;transition:opacity .55s ease, transform .55s ease, background .5s ease, border-color .5s ease, box-shadow .5s ease;
   }
   .item-text{flex:1;min-width:0;}
   .row:nth-child(odd) .card-box{grid-column:1;justify-self:end;transform:translateX(-26px);}
@@ -155,12 +156,19 @@
   .rows .row:nth-child(odd) .card-box{grid-column:1;justify-self:end;transform:translateX(-26px);}
   .rows .row:nth-child(even) .card-box{grid-column:2;justify-self:start;transform:translateX(26px);}
   .row.in-view .card-box{opacity:1;transform:translateX(0);}
+  .row.line-active .card-box{
+    background:linear-gradient(135deg, var(--wheat-soft), var(--paper-dim) 70%);
+    border-color:var(--wheat);
+    box-shadow:0 10px 26px rgba(201,154,59,0.28);
+  }
 
-  .icon-wrap{width:40px;height:40px;flex:none;border-radius:9px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--leaf-deep);border:1px solid var(--line);}
+  .icon-wrap{width:40px;height:40px;flex:none;border-radius:9px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--leaf-deep);border:1px solid var(--line);transition:background .5s ease, color .5s ease, border-color .5s ease;}
+  .row.line-active .icon-wrap{background:var(--leaf-deep);color:var(--paper);border-color:var(--leaf-deep);}
   .item-title{font-family:'Fraunces',serif;font-weight:600;font-size:17px;color:var(--leaf-deep);margin:0 0 4px;}
   .item-note{font-size:13px;color:#5c5334;font-style:italic;margin:0 0 2px;}
   .item-speaker{font-weight:600;font-size:12.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--wheat);margin:6px 0 0;}
   .item-role{font-size:13px;color:#5c5334;font-style:italic;margin:1px 0 0;}
+
 
   @media (max-width:760px){
     .agenda{padding-left:46px;}
@@ -585,7 +593,7 @@
       <span class="deco-leaf light" style="top:40%;left:2%;animation-delay:1.4s;width:18px;height:18px;" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-6 2-9 7-9 13a9 9 0 0 0 18 0c0-6-3-11-9-13z"/></svg></span>
       <span class="deco-leaf light" style="top:55%;right:3%;animation-delay:.2s;width:18px;height:18px;" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-6 2-9 7-9 13a9 9 0 0 0 18 0c0-6-3-11-9-13z"/></svg></span>
       <svg class="sheaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21V9M12 9c-1.5-3-4-3-6-6 3 0 6 1 6 6zM12 9c1.5-3 4-3 6-6-3 0-6 1-6 6zM12 15c-1.2-2.4-3.4-2.6-4.8-5 2.4-.4 4.8 1 4.8 5zM12 15c1.2-2.4 3.4-2.6 4.8-5-2.4-.4-4.8 1-4.8 5z"/></svg>
-      <p class="name">Ms. Jennifer Conejos</p>
+      <p class="name">Jennifer Conejos</p>
       <p class="role">Emcee</p>
     </section>
 
@@ -710,12 +718,20 @@
 
   const agenda = document.getElementById('agenda');
   const stemFill = document.getElementById('stemFill');
+  const timelineRows = Array.from(document.querySelectorAll('.agenda .row'));
   function updateFill(){
     const rect = agenda.getBoundingClientRect();
     const vh = window.innerHeight;
     const total = rect.height;
     const seen = Math.min(Math.max(vh*0.5 - rect.top, 0), total);
     stemFill.style.height = (seen/total*100) + '%';
+
+    timelineRows.forEach(row=>{
+      const node = row.querySelector('.node');
+      const nodeLocal = (node ? node.getBoundingClientRect().top : row.getBoundingClientRect().top) - rect.top;
+      if(seen >= nodeLocal){ row.classList.add('line-active'); }
+      else{ row.classList.remove('line-active'); }
+    });
   }
   document.addEventListener('scroll', updateFill);
   window.addEventListener('resize', updateFill);
