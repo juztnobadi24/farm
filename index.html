@@ -237,6 +237,8 @@
     padding:11px 20px;border-radius:999px;cursor:pointer;transition:border-color .2s ease, color .2s ease, background .2s ease;
   }
   .view-participants-btn:hover{border-color:var(--wheat);color:var(--wheat-soft);background:rgba(233,207,148,0.08);}
+  .feedback-btn{display:inline-block;text-decoration:none;margin-left:12px;}
+  @media (max-width:480px){.feedback-btn{margin-left:0;margin-top:12px;}}
 
   .group-block{margin-top:40px;padding-top:32px;border-top:1px solid rgba(233,207,148,0.18);}
   .group-title{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--wheat);margin:0 0 16px;}
@@ -658,6 +660,7 @@
           <p class="register-status" id="registerStatus"></p>
         </form>
         <button type="button" class="view-participants-btn" id="viewParticipantsBtn">View Registered Participants</button>
+        <a href="feedback.html" class="view-participants-btn feedback-btn">Give Feedback</a>
 
         <div class="group-block reveal">
           <p class="group-title">GROUP 2 · MPA 211 Graduate Colloquium</p>
