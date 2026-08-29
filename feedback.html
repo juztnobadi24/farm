@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback · Empowering Farmers Through Smart Farming Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241c0f;
+    --soil:#4a3a22;
+    --soil-deep:#241a0d;
+    --leaf:#4d7c3a;
+    --leaf-deep:#2f5424;
+    --wheat:#c99a3b;
+    --wheat-soft:#e9cf94;
+    --paper:#f8f2e2;
+    --paper-dim:#efe6cd;
+    --line:#ddd0a8;
+    --line-soft:#cabb8a;
+    --err:#a4402b;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--wheat-soft);color:var(--leaf-deep);}
+
+  .field-row{position:fixed;left:0;right:0;bottom:0;height:96px;display:flex;justify-content:space-evenly;align-items:flex-end;opacity:.25;pointer-events:none;z-index:0;}
+  .field-row .stalk{width:11px;height:72%;color:var(--leaf-deep);animation:sway 4.6s ease-in-out infinite;}
+  .field-row .stalk svg{width:100%;height:100%;}
+  @keyframes sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+  @media (prefers-reduced-motion: reduce){ .field-row .stalk{animation:none;} }
+
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:64px 6vw 100px;}
+
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--wheat);margin:0 0 16px;display:flex;align-items:center;gap:10px;}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--wheat);display:inline-block;}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(26px,4.2vw,42px);line-height:1.15;margin:0 0 14px;color:var(--leaf-deep);}
+  h1 em{font-style:italic;font-weight:500;color:var(--wheat);}
+  .sub{font-size:15px;color:#5c5334;max-width:60ch;margin:0 0 40px;line-height:1.65;}
+
+  .card{
+    background:var(--paper-dim);border:1px solid var(--line);border-radius:16px;
+    padding:32px 28px;box-shadow:0 10px 30px rgba(36,28,15,0.08);
+  }
+
+  .group{margin-bottom:28px;}
+  .group:last-child{margin-bottom:0;}
+  .section-heading{
+    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--leaf-deep);border-bottom:1px solid var(--line);padding-bottom:8px;margin:36px 0 20px;
+  }
+  .group:first-of-type ~ .section-heading:first-child, form > .section-heading:first-of-type{margin-top:8px;}
+  label.q{display:block;font-weight:600;font-size:14.5px;color:var(--soil-deep);margin-bottom:10px;}
+  label.q .req{color:var(--err);margin-left:3px;}
+  .hint{font-size:12.5px;color:#8a7a4a;margin:-4px 0 10px;font-style:italic;}
+
+  input[type="text"], textarea{
+    width:100%;font-family:'Inter',sans-serif;font-size:14.5px;color:var(--ink);
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;outline:none;transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .static-value{
+    font-family:'Inter',sans-serif;font-size:14.5px;color:var(--soil-deep);font-weight:500;
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;
+  }
+  input[type="text"]:focus, textarea:focus{border-color:var(--wheat);box-shadow:0 0 0 3px rgba(201,154,59,0.18);}
+  textarea{resize:vertical;min-height:96px;line-height:1.5;}
+
+  /* Star rating */
+  .stars{display:flex;gap:6px;}
+  .stars button{
+    background:none;border:none;padding:2px;cursor:pointer;color:var(--line-soft);
+    transition:color .15s ease, transform .15s ease;
+  }
+  .stars button svg{width:30px;height:30px;display:block;pointer-events:none;}
+  .stars button:hover, .stars button:hover ~ button{color:var(--line-soft);}
+  .stars button.active{color:var(--wheat);}
+  .stars button.active svg{fill:var(--wheat);}
+  .stars button:not(.active) svg{fill:none;stroke:currentColor;stroke-width:1.6;}
+  .stars button:hover{transform:scale(1.08);}
+  .stars-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:#8a7a4a;margin-top:6px;text-transform:uppercase;}
+
+  /* Recommend toggle */
+  .choice-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .choice{
+    flex:1;min-width:110px;text-align:center;padding:12px 10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--paper);cursor:pointer;font-weight:600;font-size:14px;color:var(--soil);
+    transition:all .18s ease;user-select:none;
+  }
+  .choice:hover{border-color:var(--wheat);}
+  .choice.active{background:linear-gradient(135deg, var(--wheat-soft), var(--paper-dim) 70%);border-color:var(--wheat);color:var(--leaf-deep);box-shadow:0 6px 16px rgba(201,154,59,0.22);}
+
+  .submit-row{margin-top:34px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .submit-btn{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:2px;text-transform:uppercase;
+    background:var(--leaf-deep);color:var(--paper);border:none;border-radius:999px;
+    padding:14px 30px;cursor:pointer;transition:background .2s ease, transform .1s ease;
+  }
+  .submit-btn:hover{background:var(--leaf);}
+  .submit-btn:active{transform:scale(.97);}
+  .submit-btn:disabled{opacity:.55;cursor:not-allowed;}
+
+  .status{font-size:13px;}
+  .status.ok{color:var(--leaf-deep);}
+  .status.err{color:var(--err);}
+
+  .done-card{display:none;text-align:center;padding:48px 28px;}
+  .done-card.show{display:block;}
+  .done-icon{width:56px;height:56px;margin:0 auto 18px;color:var(--leaf);}
+  .done-card h2{font-family:'Fraunces',serif;color:var(--leaf-deep);font-weight:600;margin:0 0 10px;}
+  .done-card p{color:#5c5334;font-size:14.5px;margin:0 0 6px;}
+
+  .foot-link{margin-top:26px;text-align:center;}
+  .foot-link a{color:var(--soil);font-size:13px;text-decoration:underline;text-decoration-color:var(--line-soft);}
+  .foot-link a:hover{color:var(--leaf-deep);}
+
+  /* Results toggle */
+  .results-toggle{
+    display:inline-flex;align-items:center;gap:8px;margin-top:46px;background:none;border:1px dashed var(--line-soft);
+    color:var(--soil);font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;
+    padding:10px 18px;border-radius:999px;cursor:pointer;
+  }
+  .results-toggle:hover{border-color:var(--wheat);color:var(--leaf-deep);}
+
+  #resultsSection{display:none;margin-top:24px;}
+  #resultsSection.show{display:block;}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
+  .stat-box{background:var(--paper-dim);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center;}
+  .stat-box .num{font-family:'Fraunces',serif;font-size:28px;color:var(--leaf-deep);font-weight:600;}
+  .stat-box .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#8a7a4a;text-transform:uppercase;margin-top:4px;}
+
+  .comment-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;max-height:420px;overflow-y:auto;}
+  .comment-list li{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.55;}
+  .comment-list .c-meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8a7a4a;margin-top:8px;letter-spacing:.5px;}
+  .comment-list .c-empty{text-align:center;color:#8a7a4a;font-style:italic;padding:20px;}
+
+  @media (max-width:520px){
+    .wrap{padding:44px 5vw 70px;}
+    .card{padding:24px 18px;}
+    .stars button svg{width:26px;height:26px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="field-row" aria-hidden="true">
+  <div class="stalk"><svg viewBox="0 0 20 100"><path d="M10 100 L10 20 M10 20 L2 8 M10 20 L18 8 M10 40 L3 30 M10 40 L17 30 M10 60 L3 50 M10 60 L17 50" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+  <div class="stalk" style="animation-delay:-1s"><svg viewBox="0 0 20 100"><path d="M10 100 L10 20 M10 20 L2 8 M10 20 L18 8 M10 40 L3 30 M10 40 L17 30 M10 60 L3 50 M10 60 L17 50" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+  <div class="stalk" style="animation-delay:-2.4s"><svg viewBox="0 0 20 100"><path d="M10 100 L10 20 M10 20 L2 8 M10 20 L18 8 M10 40 L3 30 M10 40 L17 30 M10 60 L3 50 M10 60 L17 50" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+  <div class="stalk" style="animation-delay:-3.2s"><svg viewBox="0 0 20 100"><path d="M10 100 L10 20 M10 20 L2 8 M10 20 L18 8 M10 40 L3 30 M10 40 L17 30 M10 60 L3 50 M10 60 L17 50" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">Seminar Feedback</p>
+  <h1>Tell us about your <em>experience</em></h1>
+  <p class="sub">Your thoughts help us improve future seminars on smart farming technologies. It only takes a minute — thank you for participating.</p>
+
+  <div class="card" id="formCard">
+    <form id="feedbackForm">
+      <div class="group">
+        <label class="q">Date</label>
+        <div class="static-value">August 30, 2026</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Venue</label>
+        <div class="static-value">AVR College of Maasin</div>
+      </div>
+
+      <div class="group">
+        <label class="q" for="fullName">Name (Optional)</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Juan Dela Cruz" autocomplete="name">
+      </div>
+
+      <div class="group">
+        <label class="q" for="organization">Organization/Barangay</label>
+        <input type="text" id="organization" name="organization" placeholder="e.g. Barangay San Isidro">
+      </div>
+
+      <div class="section-heading">I. Overall Training Experience</div>
+      <div class="hint" style="margin-top:-8px;">Please rate the following using the scale below: 5 – Excellent | 4 – Very Satisfactory | 3 – Satisfactory | 2 – Needs Improvement | 1 – Poor</div>
+
+      <div class="group">
+        <label class="q">Relevance of the training to your needs <span class="req">*</span></label>
+        <div class="stars" id="rate_relevance" data-value="0"></div>
+        <div class="stars-label" id="rate_relevanceLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Clarity of objectives <span class="req">*</span></label>
+        <div class="stars" id="rate_clarityObjectives" data-value="0"></div>
+        <div class="stars-label" id="rate_clarityObjectivesLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Organization of topics <span class="req">*</span></label>
+        <div class="stars" id="rate_orgTopics" data-value="0"></div>
+        <div class="stars-label" id="rate_orgTopicsLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Usefulness of the information provided <span class="req">*</span></label>
+        <div class="stars" id="rate_usefulness" data-value="0"></div>
+        <div class="stars-label" id="rate_usefulnessLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Applicability to your farming activities <span class="req">*</span></label>
+        <div class="stars" id="rate_applicability" data-value="0"></div>
+        <div class="stars-label" id="rate_applicabilityLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="section-heading">II. Resource Person/s (Trainers)</div>
+
+      <div class="group">
+        <label class="q">Knowledge of the subject matter <span class="req">*</span></label>
+        <div class="stars" id="rate_knowledge" data-value="0"></div>
+        <div class="stars-label" id="rate_knowledgeLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Clarity of presentation <span class="req">*</span></label>
+        <div class="stars" id="rate_presentation" data-value="0"></div>
+        <div class="stars-label" id="rate_presentationLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Ability to answer questions <span class="req">*</span></label>
+        <div class="stars" id="rate_answerQuestions" data-value="0"></div>
+        <div class="stars-label" id="rate_answerQuestionsLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Engagement with participants <span class="req">*</span></label>
+        <div class="stars" id="rate_engagement" data-value="0"></div>
+        <div class="stars-label" id="rate_engagementLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="section-heading">III. Training Materials, Methods &amp; Logistics</div>
+
+      <div class="group">
+        <label class="q">Venue and facilities <span class="req">*</span></label>
+        <div class="stars" id="rate_venueFacilities" data-value="0"></div>
+        <div class="stars-label" id="rate_venueFacilitiesLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Training schedule and time management <span class="req">*</span></label>
+        <div class="stars" id="rate_schedule" data-value="0"></div>
+        <div class="stars-label" id="rate_scheduleLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Food and accommodation (if applicable) <span class="req">*</span></label>
+        <div class="stars" id="rate_foodAccom" data-value="0"></div>
+        <div class="stars-label" id="rate_foodAccomLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="group">
+        <label class="q">Overall organization of the training <span class="req">*</span></label>
+        <div class="stars" id="rate_overallOrg" data-value="0"></div>
+        <div class="stars-label" id="rate_overallOrgLabel">Tap a star to rate</div>
+      </div>
+
+      <div class="section-heading">V. Learning &amp; Impact</div>
+
+      <div class="group">
+        <label class="q" for="knowledgeGained">What new knowledge or skills did you gain from the training?</label>
+        <textarea id="knowledgeGained" name="knowledgeGained" placeholder="Share your thoughts..."></textarea>
+      </div>
+
+      <div class="group">
+        <label class="q" for="applyLearning">How do you plan to apply what you learned?</label>
+        <textarea id="applyLearning" name="applyLearning" placeholder="Share your thoughts..."></textarea>
+      </div>
+
+      <div class="group">
+        <label class="q" for="mostUsefulTopic">Which topic did you find most useful?</label>
+        <input type="text" id="mostUsefulTopic" name="mostUsefulTopic" placeholder="e.g. Drip irrigation basics">
+      </div>
+
+      <div class="group">
+        <label class="q" for="topicNeedsImprovement">Which topic needs improvement?</label>
+        <input type="text" id="topicNeedsImprovement" name="topicNeedsImprovement" placeholder="e.g. Pest management">
+      </div>
+
+      <div class="section-heading">VI. Suggestions &amp; Comments</div>
+
+      <div class="group">
+        <label class="q" for="comments">Please share your suggestions to improve future trainings</label>
+        <textarea id="comments" name="comments" placeholder="Share your thoughts..."></textarea>
+      </div>
+
+      <div class="section-heading">VII. Overall Rating</div>
+
+      <div class="group">
+        <label class="q">How would you rate this training overall? <span class="req">*</span></label>
+        <div class="choice-row" id="overallRatingRow" data-value="">
+          <div class="choice" data-val="Excellent">Excellent</div>
+          <div class="choice" data-val="Very Satisfactory">Very Satisfactory</div>
+          <div class="choice" data-val="Satisfactory">Satisfactory</div>
+          <div class="choice" data-val="Needs Improvement">Needs Improvement</div>
+          <div class="choice" data-val="Poor">Poor</div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Feedback</button>
+        <span class="status" id="formStatus"></span>
+      </div>
+    </form>
+  </div>
+
+  <div class="card done-card" id="doneCard">
+    <svg class="done-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/>
+    </svg>
+    <h2>Thank you!</h2>
+    <p>Your feedback has been recorded. We appreciate you taking the time.</p>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="results-toggle" id="resultsToggle">View Feedback Summary</button>
+  </div>
+
+  <div id="resultsSection">
+    <div class="stat-grid" id="statGrid">
+      <div class="stat-box"><div class="num" id="statCount">–</div><div class="lbl">Responses</div></div>
+      <div class="stat-box"><div class="num" id="statSection1">–</div><div class="lbl">Avg. Training Experience</div></div>
+      <div class="stat-box"><div class="num" id="statSection2">–</div><div class="lbl">Avg. Resource Person/s</div></div>
+      <div class="stat-box"><div class="num" id="statSection3">–</div><div class="lbl">Avg. Materials &amp; Logistics</div></div>
+      <div class="stat-box"><div class="num" id="statTopRating">–</div><div class="lbl">Excellent / Very Satisfactory</div></div>
+    </div>
+    <ul class="comment-list" id="commentList"><li class="c-empty">Loading…</li></ul>
+  </div>
+
+  <div class="foot-link"><a href="index.html">&larr; Back to seminar page</a></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+  // ============================================================
+  // FIREBASE CONFIG — same project as the main seminar page, so
+  // feedback lives alongside the participants collection.
+  // ============================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAMSe4hGBY3LehLXZleRtch4UCwsbCS6Bc",
+    authDomain: "farmer-1f8a9.firebaseapp.com",
+    projectId: "farmer-1f8a9",
+    storageBucket: "farmer-1f8a9.firebasestorage.app",
+    messagingSenderId: "383349693218",
+    appId: "1:383349693218:web:7d9377af46da842df5637b"
+  };
+
+  let db = null;
+  try{
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  }catch(err){
+    console.error("Firebase failed to initialize. Check your firebaseConfig.", err);
+  }
+
+  const FEEDBACK_COLLECTION = "feedback";
+
+  // ---------------- Star rating widget ----------------
+  function starIcon(){
+    return '<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26 6.9.6-5.2 4.53 1.58 6.77L12 16.9l-6.18 3.26 1.58-6.77-5.2-4.53 6.9-.6L12 2z"/></svg>';
+  }
+
+  function buildStars(containerId, labelId){
+    const el = document.getElementById(containerId);
+    const labelEl = document.getElementById(labelId);
+    const labels = ['','Poor','Fair','Good','Very Good','Excellent'];
+    for(let i = 1; i <= 5; i++){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.innerHTML = starIcon();
+      btn.dataset.val = i;
+      btn.addEventListener('click', function(){
+        el.dataset.value = i;
+        Array.from(el.children).forEach(function(child, idx){
+          child.classList.toggle('active', idx < i);
+        });
+        labelEl.textContent = labels[i];
+      });
+      el.appendChild(btn);
+    }
+  }
+  const STAR_IDS = [
+    'rate_relevance', 'rate_clarityObjectives', 'rate_orgTopics', 'rate_usefulness', 'rate_applicability',
+    'rate_knowledge', 'rate_presentation', 'rate_answerQuestions', 'rate_engagement',
+    'rate_venueFacilities', 'rate_schedule', 'rate_foodAccom', 'rate_overallOrg'
+  ];
+  const SECTION_STAR_IDS = {
+    1: ['rate_relevance', 'rate_clarityObjectives', 'rate_orgTopics', 'rate_usefulness', 'rate_applicability'],
+    2: ['rate_knowledge', 'rate_presentation', 'rate_answerQuestions', 'rate_engagement'],
+    3: ['rate_venueFacilities', 'rate_schedule', 'rate_foodAccom', 'rate_overallOrg']
+  };
+  STAR_IDS.forEach(function(id){ buildStars(id, id + 'Label'); });
+
+  // ---------------- Overall rating choice ----------------
+  const overallRatingRow = document.getElementById('overallRatingRow');
+  Array.from(overallRatingRow.children).forEach(function(choice){
+    choice.addEventListener('click', function(){
+      Array.from(overallRatingRow.children).forEach(function(c){ c.classList.remove('active'); });
+      choice.classList.add('active');
+      overallRatingRow.dataset.value = choice.dataset.val;
+    });
+  });
+
+  // ---------------- Form submission ----------------
+  const form = document.getElementById('feedbackForm');
+  const nameInput = document.getElementById('fullName');
+  const commentsInput = document.getElementById('comments');
+  const submitBtn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('formStatus');
+  const formCard = document.getElementById('formCard');
+  const doneCard = document.getElementById('doneCard');
+
+  nameInput.addEventListener('input', function(){
+    const pos = nameInput.selectionStart;
+    nameInput.value = nameInput.value.toUpperCase();
+    nameInput.setSelectionRange(pos, pos);
+  });
+
+  function setStatus(msg, kind){
+    statusEl.textContent = msg;
+    statusEl.className = 'status' + (kind ? ' ' + kind : '');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const name = nameInput.value.trim().toUpperCase();
+    const trainingDate = 'August 30, 2026';
+    const venue = 'AVR College of Maasin';
+    const organization = document.getElementById('organization').value.trim();
+
+    const ratings = {};
+    let missingRating = false;
+    STAR_IDS.forEach(function(id){
+      const val = parseInt(document.getElementById(id).dataset.value, 10) || 0;
+      ratings[id] = val;
+      if(!val) missingRating = true;
+    });
+
+    const overallRating = overallRatingRow.dataset.value || '';
+    const knowledgeGained = document.getElementById('knowledgeGained').value.trim();
+    const applyLearning = document.getElementById('applyLearning').value.trim();
+    const mostUsefulTopic = document.getElementById('mostUsefulTopic').value.trim();
+    const topicNeedsImprovement = document.getElementById('topicNeedsImprovement').value.trim();
+    const comments = commentsInput.value.trim();
+
+    if(missingRating){ setStatus('Please fill in all star ratings in Sections I, II, and III.', 'err'); return; }
+    if(!overallRating){ setStatus('Please select your overall rating of the training.', 'err'); return; }
+    if(!db){ setStatus('Feedback is not connected. Please tell the organizers: Firebase did not initialize.', 'err'); return; }
+
+    submitBtn.disabled = true;
+    setStatus('Submitting…', '');
+
+    db.collection(FEEDBACK_COLLECTION).add({
+      name: name,
+      trainingDate: trainingDate,
+      venue: venue,
+      organization: organization,
+      ratings: ratings,
+      overallRating: overallRating,
+      knowledgeGained: knowledgeGained,
+      applyLearning: applyLearning,
+      mostUsefulTopic: mostUsefulTopic,
+      topicNeedsImprovement: topicNeedsImprovement,
+      comments: comments,
+      submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      formCard.style.display = 'none';
+      doneCard.classList.add('show');
+    }).catch(function(err){
+      console.error(err);
+      setStatus('Could not submit (' + (err.code || err.message) + '). If this persists, ask the organizers to check the Firestore security rules.', 'err');
+      submitBtn.disabled = false;
+    });
+  });
+
+  // ---------------- Results summary ----------------
+  const resultsToggle = document.getElementById('resultsToggle');
+  const resultsSection = document.getElementById('resultsSection');
+  const commentList = document.getElementById('commentList');
+  let resultsLoaded = false;
+
+  function loadResults(){
+    commentList.innerHTML = '<li class="c-empty">Loading…</li>';
+    if(!db){
+      commentList.innerHTML = '<li class="c-empty">Feedback is not connected.</li>';
+      return;
+    }
+    db.collection(FEEDBACK_COLLECTION).orderBy('submittedAt', 'desc').get().then(function(snap){
+      if(snap.empty){
+        commentList.innerHTML = '<li class="c-empty">No feedback submitted yet.</li>';
+        document.getElementById('statCount').textContent = '0';
+        document.getElementById('statSection1').textContent = '–';
+        document.getElementById('statSection2').textContent = '–';
+        document.getElementById('statSection3').textContent = '–';
+        document.getElementById('statTopRating').textContent = '–';
+        return;
+      }
+
+      let count = 0, sumSection1 = 0, sumSection2 = 0, sumSection3 = 0, topCount = 0;
+      commentList.innerHTML = '';
+
+      snap.forEach(function(doc){
+        const data = doc.data();
+        const ratings = data.ratings || {};
+        count++;
+
+        SECTION_STAR_IDS[1].forEach(function(id){ sumSection1 += (ratings[id] || 0); });
+        SECTION_STAR_IDS[2].forEach(function(id){ sumSection2 += (ratings[id] || 0); });
+        SECTION_STAR_IDS[3].forEach(function(id){ sumSection3 += (ratings[id] || 0); });
+
+        if(data.overallRating === 'Excellent' || data.overallRating === 'Very Satisfactory') topCount++;
+
+        if(data.comments){
+          const li = document.createElement('li');
+          const p = document.createElement('div');
+          p.textContent = data.comments;
+          const meta = document.createElement('div');
+          meta.className = 'c-meta';
+          const when = (data.submittedAt && data.submittedAt.toDate) ? data.submittedAt.toDate().toLocaleString() : '';
+          meta.textContent = (data.overallRating || '–') + ' overall · ' + when;
+          li.appendChild(p);
+          li.appendChild(meta);
+          commentList.appendChild(li);
+        }
+      });
+
+      if(!commentList.children.length){
+        commentList.innerHTML = '<li class="c-empty">No written comments yet.</li>';
+      }
+
+      document.getElementById('statCount').textContent = String(count);
+      document.getElementById('statSection1').textContent = count ? (sumSection1 / (count * SECTION_STAR_IDS[1].length)).toFixed(1) : '–';
+      document.getElementById('statSection2').textContent = count ? (sumSection2 / (count * SECTION_STAR_IDS[2].length)).toFixed(1) : '–';
+      document.getElementById('statSection3').textContent = count ? (sumSection3 / (count * SECTION_STAR_IDS[3].length)).toFixed(1) : '–';
+      document.getElementById('statTopRating').textContent = count ? Math.round((topCount / count) * 100) + '%' : '–';
+    }).catch(function(err){
+      console.error(err);
+      commentList.innerHTML = '<li class="c-empty">Could not load feedback (' + (err.code || err.message) + ').</li>';
+    });
+  }
+
+  resultsToggle.addEventListener('click', function(){
+    const willShow = !resultsSection.classList.contains('show');
+    resultsSection.classList.toggle('show', willShow);
+    resultsToggle.textContent = willShow ? 'Hide Feedback Summary' : 'View Feedback Summary';
+    if(willShow){
+      loadResults();
+      resultsLoaded = true;
+    }
+  });
+</script>
+</body>
+</html>
